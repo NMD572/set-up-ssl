@@ -13,6 +13,7 @@ Below is a basic setup guide:
 **Step-5:** In another terminal (T2) run `docker-compose -f docker-compose-cert.yaml up --build`
 
 **Step-6:** If things go well, the second terminal (T2) will show something like this
+
 ```Successfully received certificate.
 letsencrypt_1  | Certificate is saved at: /etc/letsencrypt/live/yourdomain.com/fullchain.pem
 letsencrypt_1  | Key is saved at:         /etc/letsencrypt/live/yourdomain.com/privkey.pem
@@ -30,25 +31,34 @@ letsencrypt_1  | - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ```
 
 **Step-7:** Close the nginx container (press Ctrl+c or CMD+c) running in first terminal (T1) and replace with below config (after replacing the 4 occurence of `test.karthickcse05demo.xyz` with your domain name)
+
 ```
 server {
     listen 80;
     listen [::]:80;
-    server_name test.karthickcse05demo.xyz;
-location / {
+    server_name api.timechoice.solutions www.api.timechoice.solutions;
+    location / {
         rewrite ^ https://$host$request_uri? permanent;
     }
-location ~ /.well-known/acme-challenge {
+    location ~ /.well-known/acme-challenge {
         allow all;
         root /tmp/acme_challenge;
     }
 }
 server {
-    listen 443 ssl;
+    listen 443 ssl http2;
     listen [::]:443 ssl http2;
-    server_name test.karthickcse05demo.xyz;
-ssl_certificate /etc/letsencrypt/live/test.karthickcse05demo.xyz/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/test.karthickcse05demo.xyz/privkey.pem;
+    server_name api.timechoice.solutions www.api.timechoice.solutions;
+    ssl_certificate     /etc/letsencrypt/live/api.timechoice.solutions/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/api.timechoice.solutions/privkey.pem;
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+    }
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
 }
 ```
 
@@ -56,11 +66,11 @@ ssl_certificate /etc/letsencrypt/live/test.karthickcse05demo.xyz/fullchain.pem;
 SSL certificates should be installed. Verify by visiting your domain. You will get an Nginx 404 but it will be served over https. Check the certificate details.
 
 **Step-9:** Setup crontab for auto-renew by running command `crontab -e` and then pasting the below stuff there. Make sure you put the absolute path to the `docker-compose` file.
-```0 0 * * 0 expr `date +\%W` \% 2 > /dev/null || docker-compose -f <absolute path to folder>/docker-compose-cert.yaml up && docker exec -it nginx-service nginx -s reload ```
+`` 0 0 * * 0 expr `date +\%W` \% 2 > /dev/null || docker-compose -f <absolute path to folder>/docker-compose-cert.yaml up && docker exec -it nginx-service nginx -s reload  ``
 
 The cron job should do two things:
 
 1. Run the letsencrypt certbot container.
-        docker-compose -f <absolute path to folder>/docker-compose-cert.yaml up
+   docker-compose -f <absolute path to folder>/docker-compose-cert.yaml up
 2. Tell nginx server to reload newly installed certificates
-        docker exec -it nginx-service nginx -s reload
+   docker exec -it nginx-service nginx -s reload
