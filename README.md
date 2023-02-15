@@ -6,7 +6,7 @@ Below is a basic setup guide:
 
 **Step-2:** You can change the nginx version in `docker/nginx.Dockerfile`
 
-**Step-3:** Open `docker-compose-cert.yaml` and replace `karthickcse05@gmail.com` and `api.timechoice.solutions`
+**Step-3:** Open `docker-compose-cert.yaml` and replace `minhdangb3@gmail.com` and `api.timechoice.solutions`
 
 **Step-4:** In a terminal (T1) run `docker-compose up --build nginx` monitor the logs for errors as we follow next steps
 
