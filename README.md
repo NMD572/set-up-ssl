@@ -2,11 +2,11 @@
 
 Below is a basic setup guide:
 
-**Step-1:** Open `config/nginx.conf` replace `test.karthickcse05demo.xyz` with the domain you wish to configure. It can be subdomain like mine or apex domain.
+**Step-1:** Open `config/nginx.conf` replace `api.timechoice.solutions` with the domain you wish to configure. It can be subdomain like mine or apex domain.
 
 **Step-2:** You can change the nginx version in `docker/nginx.Dockerfile`
 
-**Step-3:** Open `docker-compose-cert.yaml` and replace `karthickcse05@gmail.com` and `test.karthickcse05demo.xyz`
+**Step-3:** Open `docker-compose-cert.yaml` and replace `karthickcse05@gmail.com` and `api.timechoice.solutions`
 
 **Step-4:** In a terminal (T1) run `docker-compose up --build nginx` monitor the logs for errors as we follow next steps
 
@@ -30,7 +30,7 @@ letsencrypt_1  |  * Donating to EFF:                    https://eff.org/donate-l
 letsencrypt_1  | - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ```
 
-**Step-7:** Close the nginx container (press Ctrl+c or CMD+c) running in first terminal (T1) and replace with below config (after replacing the 4 occurence of `test.karthickcse05demo.xyz` with your domain name)
+**Step-7:** Close the nginx container (press Ctrl+c or CMD+c) running in first terminal (T1) and replace with below config (after replacing the 4 occurence of `api.timechoice.solutions` with your domain name)
 
 ```
 server {
